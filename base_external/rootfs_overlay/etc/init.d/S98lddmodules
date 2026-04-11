@@ -1,0 +1,33 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+        echo "Loading ldd modules"
+
+        # Load scull
+        modprobe scull || insmod /lib/modules/$(uname -r)/extra/scull.ko
+
+        # Load faulty
+        modprobe faulty || insmod /lib/modules/$(uname -r)/extra/faulty.ko
+
+        # Load hello
+        modprobe hello || insmod /lib/modules/$(uname -r)/extra/hello.ko
+        ;;
+    stop)
+        echo "Unloading ldd modules"
+
+        rmmod hello || true
+        rmmod faulty || true
+        rmmod scull || true
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
